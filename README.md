@@ -14,15 +14,16 @@ AWS-one-punch basically pulls all accounts and profiles with the token stored in
 
 ## Setup ##
 1. clone the repo
-2. build the executable
+2. update config.json with the right AWS management console domain
+3. build the executable
  ```
    go build .
  ```
-3. add an alias for the executable in ~/.bash_profile and source the file
+4. add an alias for the executable in ~/.bash_profile and source the file
  ```
    alias aws-one-punch="/Users/zhug/workspace/aws-one-punch/aws-one-punch"
  ```
-4. check it's ready
+5. check it's ready
  ```
 $ aws-one-punch
 NAME:
