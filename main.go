@@ -108,20 +108,9 @@ func commands() {
 }
 
 func getDomain() (string, error) {
-	byts, err := ioutil.ReadFile("./config.json")
-	if err != nil {
-		return "", err
-	}
-
-	config := make(map[string]string)
-	err = json.Unmarshal(byts, &config)
-	if err != nil {
-		return "", err
-	}
-
-	doamin, exist := config["aws-console-domain"]
-	if !exist {
-		return "", fmt.Errorf("invaid aws-console-domain configured")
+	doamin := os.Getenv("AWS_CONSOLE_DOMAIN")
+	if len(doamin) == 0 {
+		return "", fmt.Errorf("invaid AWS_CONSOLE_DOMAIN configured")
 	}
 
 	return doamin, nil
