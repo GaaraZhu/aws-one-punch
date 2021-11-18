@@ -14,16 +14,16 @@ AWS-one-punch basically pulls all accounts and profiles with the token stored in
 
 ## Setup ##
 1. clone the repo
-2. update config.json with the right AWS management console domain
-3. build the executable
+2. build the executable
  ```
    go build .
  ```
-4. add an alias for the executable in ~/.bash_profile and source the file
- ```
+3. set AWS management console domain, add an alias for the executable in ~/.bash_profile and source the file
+```
+   export AWS_CONSOLE_DOMAIN="garyz.awsapps.com"
    alias aws-one-punch="/Users/zhug/workspace/aws-one-punch/aws-one-punch"
  ```
-5. check it's ready
+4. check it's ready
  ```
 $ aws-one-punch
 NAME:
@@ -53,7 +53,7 @@ $ aws-one-punch list-accounts
 2021/11/10 22:04:14 no AWS SSO Token found, please open the AWS Management Console https://gzhu.awsapps.com/start/#/ first
 ```
 
-2. open the url and run above command again
+2. open the url, wait for the SSO finished and run above command again(PS. keep listing the accounts unitl it works as the token will only be written to local cookie after all resources have been loaded during the SSO)
 ```
 $ aws-one-punch list-accounts
 AccountId: ins-sd4312, accountName: 20890663 (MRP IaaS Prod)
