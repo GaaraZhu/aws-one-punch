@@ -26,7 +26,7 @@ func main() {
 
 func info() {
 	app.Name = "aws-one-punch"
-	app.Usage = "one punch to access AWS resoruces in command line"
+	app.Usage = "one punch to grant all command line windows AWS access in MacOS"
 	app.Version = "1.0.0"
 }
 
