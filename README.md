@@ -13,17 +13,15 @@ When working with micro services using AWS resources like Cloudformation, we nor
 AWS-one-punch basically pulls all accounts and profiles with the token stored in the cookie, and generate new credentials and get them updated in the local credentials file, thus with just one command, we can grant all command line windows AWS access.
 
 ## Setup ##
-1. clone the repo
-2. build the executable
+1. install
  ```
-   go build .
+   brew tap gaarazhu/aws-one-punch && brew install gaarazhu/aws-one-punch/aws-one-punch
  ```
-3. set AWS management console domain, add an alias for the executable in ~/.bash_profile and source the file
+2. set AWS management console domain, add an alias for the executable in ~/.bash_profile and source the file
 ```
    export AWS_CONSOLE_DOMAIN="garyz.awsapps.com"
-   alias aws-one-punch="/Users/zhug/workspace/aws-one-punch/aws-one-punch"
  ```
-4. check it's ready
+3. check it's ready
  ```
 $ aws-one-punch
 NAME:
