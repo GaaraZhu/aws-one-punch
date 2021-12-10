@@ -17,7 +17,7 @@ AWS-one-punch basically pulls all accounts and profiles with the token stored in
  ```
    brew tap gaarazhu/aws-one-punch && brew install gaarazhu/aws-one-punch/aws-one-punch
  ```
-2. set AWS management console domain in ~/.bash_profile
+2. set AWS management console domain in `~/.bash_profile` and reload it with `source ~/.bash_profile`
 ```
    export AWS_CONSOLE_DOMAIN="garyz.awsapps.com"
  ```
