@@ -25,7 +25,7 @@ AWS-one-punch basically pulls all accounts and profiles with the token stored in
  ```
 $ aws-one-punch
 NAME:
-   aws-one-punch - one punch to access AWS resoruces in command line
+   aws-one-punch - one punch to grant all command line windows AWS access in MacOS
 
 USAGE:
    aws-one-punch [global options] command [command options] [arguments...]
