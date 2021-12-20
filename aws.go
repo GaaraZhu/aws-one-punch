@@ -114,7 +114,7 @@ func (as *AWSService) getAWSResource(url, token string) ([]byte, error) {
 	// failure checking
 	var failureResp failureResponse
 	if err = json.Unmarshal(bs, &failureResp); err != nil {
-		return bs, fmt.Errorf("failed to unmarshall payload %s due to %s", string(bs), err.Error())
+		return bs, fmt.Errorf("operation failed due to: failed to unmarshall payload %s", string(bs))
 	}
 	if len(failureResp.Message) != 0 {
 		return bs, fmt.Errorf("operation failed due to: %s", failureResp.Message)

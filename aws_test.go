@@ -82,6 +82,11 @@ func TestListAccounts(t *testing.T) {
 			StatusCode:   200,
 			ErrorMessage: "operation failed due to: Internal error",
 		},
+		{
+			Body:         `broken-json-string`,
+			StatusCode:   200,
+			ErrorMessage: "operation failed due to: failed to unmarshall payload broken-json-string",
+		},
 	}
 
 	for _, test := range tt {
@@ -152,6 +157,11 @@ func TestListProfiles(t *testing.T) {
 			StatusCode:   200,
 			ErrorMessage: "operation failed due to: Instance id 123 format is incorrect",
 		},
+		{
+			Body:         `broken-json-string`,
+			StatusCode:   200,
+			ErrorMessage: "operation failed due to: failed to unmarshall payload broken-json-string",
+		},
 	}
 
 	for _, test := range tt {
@@ -203,6 +213,11 @@ func TestGetCredentials(t *testing.T) {
 			Body:         `{"message":"Internal error","__type":"com.amazonaws.switchboard.portal#NullPointerException"}`,
 			StatusCode:   200,
 			ErrorMessage: "operation failed due to: Internal error",
+		},
+		{
+			Body:         `broken-json-string`,
+			StatusCode:   200,
+			ErrorMessage: "operation failed due to: failed to unmarshall payload broken-json-string",
 		},
 	}
 
