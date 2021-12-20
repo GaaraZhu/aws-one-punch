@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/urfave/cli/v2"
@@ -138,6 +139,11 @@ type credentials struct {
 	RoleCredentials roleCredentials `json:"roleCredentials"`
 }
 
+type unhappyResponse struct {
+	Message string `json:"message"`
+	Type    string `json:"__type"`
+}
+
 type roleCredentials struct {
 	AccessKeyId     string `json:"accessKeyId"`
 	SecretAccessKey string `json:"secretAccessKey"`
@@ -206,9 +212,21 @@ func getCredentials(url, token string) (credentials, error) {
 		return c, fmt.Errorf("got error %s", err.Error())
 	}
 	defer resp.Body.Close()
-	dec := json.NewDecoder(resp.Body)
-	err = dec.Decode(&c)
+	bs, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		return c, fmt.Errorf("got error %s", err.Error())
+	}
+	var failureResponse unhappyResponse
+	if err = json.Unmarshal(bs, &failureResponse); err != nil {
+		log.Fatalln(err)
+	}
+	if strings.Contains(failureResponse.Type, "Forbidden") {
+		return c, errors.New("invalid account name or profile name")
+	} else if len(failureResponse.Message) > 0 {
+		return c, fmt.Errorf("failed to get access credentials due to: %s", failureResponse.Message)
+	}
+
+	if err = json.Unmarshal(bs, &c); err != nil {
 		log.Fatalln(err)
 	}
 
