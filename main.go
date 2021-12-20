@@ -63,8 +63,11 @@ func commands() {
 			Name:    "list-profiles",
 			Aliases: []string{"ls-p"},
 			Usage:   "List profiles under an account",
+			Flags: []cli.Flag{
+				&cli.StringFlag{Name: "account-id", Required: true},
+			},
 			Action: func(c *cli.Context) error {
-				accountId := c.Args().Get(0)
+				accountId := c.Value("account-id")
 				token, err := GetAwsSsoToken(domain)
 				if err != nil {
 					log.Fatalln(err)
@@ -87,9 +90,13 @@ func commands() {
 			Name:    "access",
 			Aliases: []string{"access"},
 			Usage:   "Access AWS Resource with a profile",
+			Flags: []cli.Flag{
+				&cli.StringFlag{Name: "account-name", Required: true},
+				&cli.StringFlag{Name: "profile-name", Required: true},
+			},
 			Action: func(c *cli.Context) error {
-				accountId := c.Args().Get(0)
-				profileName := c.Args().Get(1)
+				accountId := c.Value("account-name")
+				profileName := c.Value("profile-name")
 				token, err := GetAwsSsoToken(domain)
 				if err != nil {
 					log.Fatalln(err)
