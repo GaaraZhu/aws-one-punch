@@ -109,7 +109,7 @@ func commands() {
 				if err != nil {
 					log.Fatalln(err)
 				}
-				fmt.Printf("AWS access granted with account %s and profile %s\n", accountId, profileName)
+				fmt.Printf("AWS access granted for account %s and profile %s\n", accountId, profileName)
 				return nil
 			},
 		},

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -88,7 +87,7 @@ func (as *AWSService) getCredentials(url, token string) (credentials, error) {
 		return c, err
 	}
 	if err = json.Unmarshal(bs, &c); err != nil {
-		log.Fatalln(err)
+		return c, err
 	}
 
 	return c, nil
