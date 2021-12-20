@@ -88,7 +88,7 @@ func commands() {
 		},
 		{
 			Name:    "access",
-			Aliases: []string{"access"},
+			Aliases: []string{"a"},
 			Usage:   "Access AWS Resource with a profile",
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "account-name", Required: true},
