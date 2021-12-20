@@ -63,12 +63,12 @@ AccountId: ins-14oasn, accountName: 66060440 (Shared Services)
 
 3. list profiles
 ```
-$ aws-one-punch list-profiles ins-3sadfa
+$ aws-one-punch list-profiles --account-id ins-3sadfa
 ProfileName: DigitalDeveloperNonprodAccess
 ```
 4. one punch for access
 ```
-$ aws-one-punch access 69127290 DigitalDeveloperNonprodAccess
+$ aws-one-punch access --account-name 69127290 --profile-name DigitalDeveloperNonprodAccess
 AWS access granted with account 69127290 and profile DigitalDeveloperNonprodAccess
 ```
 
