@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -216,17 +217,27 @@ func getCredentials(url, token string) (credentials, error) {
 
 func updateCredentialFile(c credentials) error {
 	usr, _ := user.Current()
-	filePath := fmt.Sprintf("%s/.aws/credentials", usr.HomeDir)
-	// remove the credentials file first
-	err := os.Remove(filePath)
-	if err != nil {
-		return fmt.Errorf("failed to remove existing credentials file %s", err.Error())
+	folderPath := fmt.Sprintf("%s/.aws", usr.HomeDir)
+	if awsFolderExists, _ := pathExists(folderPath); !awsFolderExists {
+		err := os.Mkdir(folderPath, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("failed to create aws folder %s due to %s", folderPath, err.Error())
+		}
+	}
+
+	filePath := fmt.Sprintf("%s/credentials", folderPath)
+	// remove credential file if it exists
+	if exists, _ := pathExists(filePath); exists {
+		err := os.Remove(filePath)
+		if err != nil {
+			return fmt.Errorf("failed to remove existing credentials file %s", err.Error())
+		}
 	}
 
 	// create the credentials file
 	f, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return fmt.Errorf("failed to create credentials file %s", err.Error())
+		return fmt.Errorf("failed to create credentials file %s due to %s", filePath, err.Error())
 	}
 	defer f.Close()
 
@@ -238,4 +249,15 @@ func updateCredentialFile(c credentials) error {
 	}
 
 	return nil
+}
+
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if errors.Is(err, os.ErrNotExist) {
+		return false, nil
+	}
+	return false, err
 }
