@@ -11,21 +11,21 @@ import (
 	"time"
 )
 
-type profileResult struct {
-	Result []profile `json:"result"`
+type account struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type accounts struct {
+	Result []account `json:"result"`
 }
 
 type profile struct {
 	Name string `json:"name"`
 }
 
-type accountResult struct {
-	Result []account `json:"result"`
-}
-
-type account struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+type profiles struct {
+	Result []profile `json:"result"`
 }
 
 type credentials struct {
@@ -44,18 +44,29 @@ type roleCredentials struct {
 	Expiration      int64  `json:"expiration"`
 }
 
-func getAWSResource(url, token string) ([]byte, error) {
-	var bs []byte
-	client := &http.Client{
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+var (
+	Client HTTPClient
+)
+
+func init() {
+	Client = &http.Client{
 		Timeout: time.Second * 20,
 	}
+}
+
+func getAWSResource(url, token string) ([]byte, error) {
+	var bs []byte
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return bs, fmt.Errorf("got error %s", err.Error())
 	}
 	req.Header.Set("x-amz-sso-bearer-token", token)
 	req.Header.Add("x-amz-sso_bearer_token", token)
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	if err != nil {
 		return bs, fmt.Errorf("got error %s", err.Error())
 	}
@@ -63,12 +74,12 @@ func getAWSResource(url, token string) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-func getAccounts(url, token string) (accountResult, error) {
+func getAccounts(url, token string) (accounts, error) {
 	bs, err := getAWSResource(url, token)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var accounts accountResult
+	var accounts accounts
 	err = json.Unmarshal(bs, &accounts)
 	if err != nil {
 		return accounts, err
@@ -76,12 +87,12 @@ func getAccounts(url, token string) (accountResult, error) {
 	return accounts, nil
 }
 
-func getProfiles(url, token string) (profileResult, error) {
+func getProfiles(url, token string) (profiles, error) {
 	bs, err := getAWSResource(url, token)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var profiles profileResult
+	var profiles profiles
 	err = json.Unmarshal(bs, &profiles)
 	if err != nil {
 		return profiles, err
@@ -91,16 +102,13 @@ func getProfiles(url, token string) (profileResult, error) {
 
 func getCredentials(url, token string) (credentials, error) {
 	var c credentials
-	client := &http.Client{
-		Timeout: time.Second * 20,
-	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return c, fmt.Errorf("got error %s", err.Error())
 	}
 	req.Header.Set("x-amz-sso-bearer-token", token)
 	req.Header.Add("x-amz-sso_bearer_token", token)
-	resp, err := client.Do(req)
+	resp, err := Client.Do(req)
 	if err != nil {
 		return c, fmt.Errorf("got error %s", err.Error())
 	}
