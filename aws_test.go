@@ -174,7 +174,7 @@ func TestListProfiles(t *testing.T) {
 }
 
 func TestGetCredentials(t *testing.T) {
-	tt := []struct {
+	ts := []struct {
 		Body       string
 		StatusCode int
 
@@ -195,16 +195,8 @@ func TestGetCredentials(t *testing.T) {
 			ErrorMessage: "",
 		},
 		{
-			Body:       `{"message":"No access","__type":"com.amazonaws.switchboard.portal#ForbiddenException"}`,
-			StatusCode: 200,
-			Result: credentials{
-				RoleCredentials: roleCredentials{
-					AccessKeyId:     "ASI",
-					SecretAccessKey: "s56dMibME",
-					SessionToken:    "IQoJb3JpZX2VjEP",
-					Expiration:      1639987624000,
-				},
-			},
+			Body:         `{"message":"No access","__type":"com.amazonaws.switchboard.portal#ForbiddenException"}`,
+			StatusCode:   200,
 			ErrorMessage: "operation failed due to: No access",
 		},
 		{
@@ -214,7 +206,7 @@ func TestGetCredentials(t *testing.T) {
 		},
 	}
 
-	for _, test := range tt {
+	for _, test := range ts {
 		client.DoFunc = func(r *http.Request) (*http.Response, error) {
 			return &http.Response{
 				Body:       io.NopCloser(strings.NewReader(test.Body)),

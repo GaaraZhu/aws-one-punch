@@ -2,12 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 )
 
 type account struct {
@@ -58,11 +56,11 @@ func NewAWSService(client HTTPClient) AWSService {
 }
 
 func (as *AWSService) getAccounts(url, token string) (accounts, error) {
+	var accounts accounts
 	bs, err := as.getAWSResource(url, token)
 	if err != nil {
-		log.Fatalln(err)
+		return accounts, err
 	}
-	var accounts accounts
 	err = json.Unmarshal(bs, &accounts)
 	if err != nil {
 		return accounts, err
@@ -71,11 +69,11 @@ func (as *AWSService) getAccounts(url, token string) (accounts, error) {
 }
 
 func (as *AWSService) getProfiles(url, token string) (profiles, error) {
+	var profiles profiles
 	bs, err := as.getAWSResource(url, token)
 	if err != nil {
-		log.Fatalln(err)
+		return profiles, err
 	}
-	var profiles profiles
 	err = json.Unmarshal(bs, &profiles)
 	if err != nil {
 		return profiles, err
@@ -84,11 +82,11 @@ func (as *AWSService) getProfiles(url, token string) (profiles, error) {
 }
 
 func (as *AWSService) getCredentials(url, token string) (credentials, error) {
+	var c credentials
 	bs, err := as.getAWSResource(url, token)
 	if err != nil {
-		log.Fatalln(err)
+		return c, err
 	}
-	var c credentials
 	if err = json.Unmarshal(bs, &c); err != nil {
 		log.Fatalln(err)
 	}
@@ -113,15 +111,12 @@ func (as *AWSService) getAWSResource(url, token string) ([]byte, error) {
 	if err != nil {
 		return bs, err
 	}
-
 	// failure checking
 	var failureResp failureResponse
-	if err = json.Unmarshal(bs, &resp); err != nil {
-		log.Fatalln(err)
+	if err = json.Unmarshal(bs, &failureResp); err != nil {
+		return bs, fmt.Errorf("failed to unmarshall payload %s due to %s", string(bs), err.Error())
 	}
-	if strings.Contains(failureResp.Type, "Forbidden") {
-		return bs, errors.New("invalid account name or profile name")
-	} else if len(failureResp.Message) > 0 {
+	if len(failureResp.Message) != 0 {
 		return bs, fmt.Errorf("operation failed due to: %s", failureResp.Message)
 	}
 
