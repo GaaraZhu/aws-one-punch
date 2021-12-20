@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/user"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -32,6 +34,9 @@ func commands() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	awsService := NewAWSService(&http.Client{
+		Timeout: time.Second * 20,
+	})
 	app.Commands = []*cli.Command{
 		{
 			Name:    "list-accounts",
@@ -42,7 +47,7 @@ func commands() {
 				if err != nil {
 					return err
 				}
-				accounts, err := getAccounts("https://portal.sso.ap-southeast-2.amazonaws.com/instance/appinstances", token)
+				accounts, err := awsService.getAccounts("https://portal.sso.ap-southeast-2.amazonaws.com/instance/appinstances", token)
 				if err != nil {
 					return err
 				}
@@ -67,7 +72,7 @@ func commands() {
 				if err != nil {
 					log.Fatalln(err)
 				}
-				profiles, err := getProfiles(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/instance/appinstance/%s/profiles", accountId), token)
+				profiles, err := awsService.getProfiles(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/instance/appinstance/%s/profiles", accountId), token)
 				if err != nil {
 					log.Fatalln(err)
 				}
@@ -96,7 +101,7 @@ func commands() {
 				if err != nil {
 					log.Fatalln(err)
 				}
-				cs, err := getCredentials(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/federation/credentials/?account_id=%s&role_name=%s&debug=true", accountId, profileName), token)
+				cs, err := awsService.getCredentials(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/federation/credentials/?account_id=%s&role_name=%s&debug=true", accountId, profileName), token)
 				if err != nil {
 					log.Fatalln(err)
 				}

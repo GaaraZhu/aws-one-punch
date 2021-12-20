@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type account struct {
@@ -32,7 +31,7 @@ type credentials struct {
 	RoleCredentials roleCredentials `json:"roleCredentials"`
 }
 
-type unhappyResponse struct {
+type failureResponse struct {
 	Message string `json:"message"`
 	Type    string `json:"__type"`
 }
@@ -48,34 +47,18 @@ type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-var (
-	Client HTTPClient
-)
+type AWSService struct {
+	client HTTPClient
+}
 
-func init() {
-	Client = &http.Client{
-		Timeout: time.Second * 20,
+func NewAWSService(client HTTPClient) AWSService {
+	return AWSService{
+		client: client,
 	}
 }
 
-func getAWSResource(url, token string) ([]byte, error) {
-	var bs []byte
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return bs, fmt.Errorf("got error %s", err.Error())
-	}
-	req.Header.Set("x-amz-sso-bearer-token", token)
-	req.Header.Add("x-amz-sso_bearer_token", token)
-	resp, err := Client.Do(req)
-	if err != nil {
-		return bs, fmt.Errorf("got error %s", err.Error())
-	}
-	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
-}
-
-func getAccounts(url, token string) (accounts, error) {
-	bs, err := getAWSResource(url, token)
+func (as *AWSService) getAccounts(url, token string) (accounts, error) {
+	bs, err := as.getAWSResource(url, token)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -87,8 +70,8 @@ func getAccounts(url, token string) (accounts, error) {
 	return accounts, nil
 }
 
-func getProfiles(url, token string) (profiles, error) {
-	bs, err := getAWSResource(url, token)
+func (as *AWSService) getProfiles(url, token string) (profiles, error) {
+	bs, err := as.getAWSResource(url, token)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -100,36 +83,47 @@ func getProfiles(url, token string) (profiles, error) {
 	return profiles, nil
 }
 
-func getCredentials(url, token string) (credentials, error) {
-	var c credentials
-	req, err := http.NewRequest("GET", url, nil)
+func (as *AWSService) getCredentials(url, token string) (credentials, error) {
+	bs, err := as.getAWSResource(url, token)
 	if err != nil {
-		return c, fmt.Errorf("got error %s", err.Error())
-	}
-	req.Header.Set("x-amz-sso-bearer-token", token)
-	req.Header.Add("x-amz-sso_bearer_token", token)
-	resp, err := Client.Do(req)
-	if err != nil {
-		return c, fmt.Errorf("got error %s", err.Error())
-	}
-	defer resp.Body.Close()
-	bs, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return c, fmt.Errorf("got error %s", err.Error())
-	}
-	var failureResponse unhappyResponse
-	if err = json.Unmarshal(bs, &failureResponse); err != nil {
 		log.Fatalln(err)
 	}
-	if strings.Contains(failureResponse.Type, "Forbidden") {
-		return c, errors.New("invalid account name or profile name")
-	} else if len(failureResponse.Message) > 0 {
-		return c, fmt.Errorf("failed to get access credentials due to: %s", failureResponse.Message)
-	}
-
+	var c credentials
 	if err = json.Unmarshal(bs, &c); err != nil {
 		log.Fatalln(err)
 	}
 
 	return c, nil
+}
+
+func (as *AWSService) getAWSResource(url, token string) ([]byte, error) {
+	var bs []byte
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return bs, fmt.Errorf("got error %s", err.Error())
+	}
+	req.Header.Set("x-amz-sso-bearer-token", token)
+	req.Header.Add("x-amz-sso_bearer_token", token)
+	resp, err := as.client.Do(req)
+	if err != nil {
+		return bs, fmt.Errorf("got error %s", err.Error())
+	}
+	defer resp.Body.Close()
+	bs, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return bs, err
+	}
+
+	// failure checking
+	var failureResp failureResponse
+	if err = json.Unmarshal(bs, &resp); err != nil {
+		log.Fatalln(err)
+	}
+	if strings.Contains(failureResp.Type, "Forbidden") {
+		return bs, errors.New("invalid account name or profile name")
+	} else if len(failureResp.Message) > 0 {
+		return bs, fmt.Errorf("operation failed due to: %s", failureResp.Message)
+	}
+
+	return bs, err
 }
