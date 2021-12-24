@@ -20,7 +20,7 @@ AWS CLI has been installed, and the default profile has been configured: https:/
 ## Setup ##
 1. install with Homebrew
  ```
-   brew tap gaarazhu/aws-one-punch && brew install gaarazhu/aws-one-punch/aws-one-punch
+   brew install gaarazhu/aws-one-punch/aws-one-punch
  ```
 2. set AWS management console domain in `~/.bash_profile` and reload it with `source ~/.bash_profile`
 ```
