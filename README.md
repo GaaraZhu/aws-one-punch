@@ -12,7 +12,7 @@ When working with micro services using AWS resources like Cloudformation, we nor
 ## Solution ##
 AWS-one-punch basically pulls all accounts and profiles with the token stored in the cookie, and generate new credentials and get them updated in the local credentials file, thus with just one command, we can grant all command line windows AWS access.
 
-**Note: for simplicity, the credentials file will be overriden to only have section for the `default` profile.**
+**Note: for simplicity, the `default` profile will be used for updating in the credentials file.**
 
 ## Prerequisites ##
 AWS CLI has been installed, and the default profile has been configured: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html.
