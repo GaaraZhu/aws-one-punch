@@ -50,7 +50,7 @@ $ aws-one-punch list-accounts
 2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
 ```
 
-2. open the url, wait for the SSO finished and run above command again(PS. keep listing the accounts unitl it works as the token will only be written to local cookie after all resources have been loaded during the SSO)
+2. open the url, wait for the SSO finished and run above command again(PS. keep listing the accounts unitl it works as the token will only be written to cookie when all resources have been loaded during the SSO)
 ```
 $ aws-one-punch list-accounts
 AccountId: ins-sd4312, accountName: 20890663 (MRP IaaS Prod)
