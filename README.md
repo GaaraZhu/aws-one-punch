@@ -1,24 +1,19 @@
 # aws-one-punch
-One punch to grant all command line windows AWS access in MacOS
+One punch to grant all command prompts AWS access with IAM Role credentials in OSX.
 
 ## Background ##
-AWS provides three options to access the resources:
-* management console access
-* command line access
-* programmatic access
-
-When working with micro services using AWS resources like Cloudformation, we normally open multiple command line windows so that we can update the corresponding AWS resources after changing each individual service. The pain point is we have to grant the access every one hour by setting the AWS environment variables in each command line window. One solution is to update the local credentials file instead of setting the environment variables, but that has to be done manually, every one hour.
+When working with micro services using Cloudformation, we normally open multiple command prompts so that we can update the corresponding AWS resources after changing each individual service. As recommended by AWS, we should use IAM roles instead of long-term access keys. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.
 
 ## Solution ##
-AWS-one-punch basically pulls all accounts and profiles with the token stored in the cookie, and generate new credentials and get them updated in the local credentials file, thus with just one command, we can grant all command line windows AWS access.
+AWS-one-punch basically pulls all accounts and profiles(roles) with the SSO bearer token stored in cookie to generate new credentials and get them updated in the local credentials file which means with just one command, we can grant all command prompts the access.
 
-**Note: for simplicity, the `default` profile will be used for updating in the credentials file.**
+**Note: for simplicity, the `default` profile will be used in the credentials file.**
 
 ## Prerequisites ##
-AWS CLI has been installed, and the default profile has been configured: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html.
+AWS CLI has been installed, and the default profile has been configured.
 
 ## Setup ##
-1. install with Homebrew
+1. install via Homebrew
  ```
    brew install gaarazhu/aws-one-punch/aws-one-punch
  ```
@@ -30,7 +25,7 @@ AWS CLI has been installed, and the default profile has been configured: https:/
  ```
 $ aws-one-punch
 NAME:
-   aws-one-punch - one punch to grant all command line windows AWS access in MacOS
+   aws-one-punch - one punch to grant all command prompts AWS access in MacOS
 
 USAGE:
    aws-one-punch [global options] command [command options] [arguments...]
@@ -81,4 +76,4 @@ AWS access granted with account 69127290 and profile DigitalDeveloperNonprodAcce
 Your contributions are always welcome!
 
 ## License ##
-This work is licensed under [Creative Commons Attribution 4.0 International Licenese](https://creativecommons.org/licenses/by/4.0/).
+This work is licensed under [MIT](https://opensource.org/licenses/MIT).
