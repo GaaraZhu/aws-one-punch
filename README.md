@@ -9,6 +9,7 @@ AWS-one-punch basically pulls all accounts and IAM roles with the SSO bearer tok
 
 ## Prerequisites ##
 AWS CLI has been installed, and the default profile has been configured.
+
 **Note: for simplicity, the `default` profile will be used in the credentials file.**
 
 ## Setup ##
@@ -16,7 +17,7 @@ AWS CLI has been installed, and the default profile has been configured.
  ```
    brew install gaarazhu/aws-one-punch/aws-one-punch
  ```
-2. set AWS management console domain in `~/.bash_profile` or equivalent and reload it with `source ~/.bash_profile`
+2. set the AWS user portal in `~/.bash_profile` or equivalent and reload it with `source ~/.bash_profile`
 ```
    export AWS_CONSOLE_DOMAIN="garyz.awsapps.com"
  ```
