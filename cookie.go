@@ -59,7 +59,7 @@ func GetAwsSsoToken(domain string) (string, error) {
 			}
 		}
 	}
-	return "", fmt.Errorf(fmt.Sprintf("no AWS SSO Token found, please open the AWS Management Console https://%s/start/#/ first", domain))
+	return "", fmt.Errorf(fmt.Sprintf("No AWS SSO token found, please finish the SSO in the user portal first: https://%s/start/#/ first", domain))
 }
 
 func decryptValue(encryptedValue []byte) string {

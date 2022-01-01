@@ -108,12 +108,12 @@ func TestListAccounts(t *testing.T) {
 	}
 }
 
-func TestListProfiles(t *testing.T) {
+func TestListRoles(t *testing.T) {
 	tt := []struct {
 		Body       string
 		StatusCode int
 
-		Result       profiles
+		Result       roles
 		ErrorMessage string
 	}{
 		{
@@ -140,8 +140,8 @@ func TestListProfiles(t *testing.T) {
 						]
 					}`,
 			StatusCode: 200,
-			Result: profiles{
-				Result: []profile{
+			Result: roles{
+				Result: []role{
 					{
 						Name: "name1",
 					},
@@ -172,7 +172,7 @@ func TestListProfiles(t *testing.T) {
 			}, nil
 		}
 
-		p, err := service.getProfiles("url", "token")
+		p, err := service.getRoles("url", "token")
 		if err != nil && err.Error() != test.ErrorMessage {
 			t.Fatalf("want %s, got %s", test.ErrorMessage, err.Error())
 		}

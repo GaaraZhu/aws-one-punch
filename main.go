@@ -25,7 +25,7 @@ func main() {
 
 func info() {
 	app.Name = "aws-one-punch"
-	app.Usage = "one punch to grant all command line windows AWS access in MacOS"
+	app.Usage = "one punch to grant all command prompts AWS access with IAM Role credentials in OSX."
 	app.Version = "1.0.0"
 }
 
@@ -60,9 +60,9 @@ func commands() {
 			},
 		},
 		{
-			Name:    "list-profiles",
-			Aliases: []string{"ls-p"},
-			Usage:   "List profiles under an account",
+			Name:    "list-roles",
+			Aliases: []string{"ls-r"},
+			Usage:   "List IAM roles under an account",
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "account-id", Required: true},
 			},
@@ -72,36 +72,36 @@ func commands() {
 				if err != nil {
 					log.Fatalln(err)
 				}
-				profiles, err := awsService.getProfiles(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/instance/appinstance/%s/profiles", accountId), token)
+				roles, err := awsService.getRoles(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/instance/appinstance/%s/profiles", accountId), token)
 				if err != nil {
 					log.Fatalln(err)
 				}
-				if len(profiles.Result) > 0 {
-					for i := 0; i < len(profiles.Result); i++ {
-						fmt.Printf("ProfileName: %s\n", profiles.Result[i].Name)
+				if len(roles.Result) > 0 {
+					for i := 0; i < len(roles.Result); i++ {
+						fmt.Printf("RoleName: %s\n", roles.Result[i].Name)
 					}
 					return nil
 				}
-				fmt.Printf("no profiles found for account %s\n", accountId)
+				fmt.Printf("no IAM roles found for account %s\n", accountId)
 				return nil
 			},
 		},
 		{
 			Name:    "access",
 			Aliases: []string{"a"},
-			Usage:   "Access AWS Resource with a profile",
+			Usage:   "Access AWS Resource with IAM role credentials",
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "account-name", Required: true},
-				&cli.StringFlag{Name: "profile-name", Required: true},
+				&cli.StringFlag{Name: "role-name", Required: true},
 			},
 			Action: func(c *cli.Context) error {
 				accountId := c.Value("account-name")
-				profileName := c.Value("profile-name")
+				roleName := c.Value("role-name")
 				token, err := GetAwsSsoToken(domain)
 				if err != nil {
 					log.Fatalln(err)
 				}
-				cs, err := awsService.getCredentials(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/federation/credentials/?account_id=%s&role_name=%s&debug=true", accountId, profileName), token)
+				cs, err := awsService.getCredentials(fmt.Sprintf("https://portal.sso.ap-southeast-2.amazonaws.com/federation/credentials/?account_id=%s&role_name=%s&debug=true", accountId, roleName), token)
 				if err != nil {
 					log.Fatalln(err)
 				}
@@ -109,7 +109,7 @@ func commands() {
 				if err != nil {
 					log.Fatalln(err)
 				}
-				fmt.Printf("AWS access granted for account %s and profile %s\n", accountId, profileName)
+				fmt.Printf("AWS access granted for account %s and IAM role %s\n", accountId, roleName)
 				return nil
 			},
 		},

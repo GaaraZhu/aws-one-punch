@@ -1,23 +1,22 @@
 # aws-one-punch
-One punch to grant all command prompts AWS access with IAM Role credentials in OSX.
+One punch to grant all command prompts AWS access with IAM role credentials in OSX.
 
 ## Background ##
-When working with micro services using Cloudformation, we normally open multiple command prompts so that we can update the corresponding AWS resources after changing each individual service. As recommended by AWS, we should use IAM roles instead of long-term access keys. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.
+When working with micro services using Cloudformation, we normally open multiple command prompts so that we can update the corresponding AWS resources after changing each individual service. As recommended by AWS, we should use IAM roles instead of long-term access keys in this case. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.
 
 ## Solution ##
-AWS-one-punch basically pulls all accounts and profiles(roles) with the SSO bearer token stored in cookie to generate new credentials and get them updated in the local credentials file which means with just one command, we can grant all command prompts the access.
-
-**Note: for simplicity, the `default` profile will be used in the credentials file.**
+AWS-one-punch basically pulls all accounts and IAM roles with the SSO bearer token stored in cookie to generate new credentials and get them updated in the local credentials file which means with just one command, we can grant all command prompts the access.
 
 ## Prerequisites ##
 AWS CLI has been installed, and the default profile has been configured.
+**Note: for simplicity, the `default` profile will be used in the credentials file.**
 
 ## Setup ##
 1. install via Homebrew
  ```
    brew install gaarazhu/aws-one-punch/aws-one-punch
  ```
-2. set AWS management console domain in `~/.bash_profile` and reload it with `source ~/.bash_profile`
+2. set AWS management console domain in `~/.bash_profile` or equivalent and reload it with `source ~/.bash_profile`
 ```
    export AWS_CONSOLE_DOMAIN="garyz.awsapps.com"
  ```
@@ -25,7 +24,7 @@ AWS CLI has been installed, and the default profile has been configured.
  ```
 $ aws-one-punch
 NAME:
-   aws-one-punch - one punch to grant all command prompts AWS access in MacOS
+   aws-one-punch - one punch to grant all command prompts AWS access with IAM role credentials in OSX.
 
 USAGE:
    aws-one-punch [global options] command [command options] [arguments...]
@@ -35,8 +34,8 @@ VERSION:
 
 COMMANDS:
    list-accounts, ls-a  List accounts
-   list-profiles, ls-p  List profiles under an account
-   access, access       Access AWS Resource with a profile
+   list-roles, ls-r     List IAM roles under an account
+   access, a            Access AWS Resource with IAM role credentials
    help, h              Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
@@ -48,7 +47,7 @@ GLOBAL OPTIONS:
 1. list accounts
 ```
 $ aws-one-punch list-accounts
-2021/11/10 22:04:14 no AWS SSO Token found, please open the AWS Management Console https://gzhu.awsapps.com/start/#/ first
+2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
 ```
 
 2. open the url, wait for the SSO finished and run above command again(PS. keep listing the accounts unitl it works as the token will only be written to local cookie after all resources have been loaded during the SSO)
@@ -61,15 +60,15 @@ AccountId: ins-siki23, accountName: 58868209 (Data Analytics)
 AccountId: ins-14oasn, accountName: 66060440 (Shared Services)
 ```
 
-3. list profiles
+3. list IAM roles
 ```
-$ aws-one-punch list-profiles --account-id ins-3sadfa
-ProfileName: DigitalDeveloperNonprodAccess
+$ aws-one-punch list-roles --account-id ins-3sadfa
+RoleName: DigitalDeveloperNonprodAccess
 ```
 4. one punch for access
 ```
-$ aws-one-punch access --account-name 69127290 --profile-name DigitalDeveloperNonprodAccess
-AWS access granted with account 69127290 and profile DigitalDeveloperNonprodAccess
+$ aws-one-punch access --account-name 69127290 --role-name DigitalDeveloperNonprodAccess
+AWS access granted with account 69127290 and IAM role DigitalDeveloperNonprodAccess
 ```
 
 ## Contribution ##

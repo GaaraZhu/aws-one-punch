@@ -16,12 +16,12 @@ type accounts struct {
 	Result []account `json:"result"`
 }
 
-type profile struct {
+type role struct {
 	Name string `json:"name"`
 }
 
-type profiles struct {
-	Result []profile `json:"result"`
+type roles struct {
+	Result []role `json:"result"`
 }
 
 type credentials struct {
@@ -67,17 +67,17 @@ func (as *AWSService) getAccounts(url, token string) (accounts, error) {
 	return accounts, nil
 }
 
-func (as *AWSService) getProfiles(url, token string) (profiles, error) {
-	var profiles profiles
+func (as *AWSService) getRoles(url, token string) (roles, error) {
+	var rs roles
 	bs, err := as.getAWSResource(url, token)
 	if err != nil {
-		return profiles, err
+		return rs, err
 	}
-	err = json.Unmarshal(bs, &profiles)
+	err = json.Unmarshal(bs, &rs)
 	if err != nil {
-		return profiles, err
+		return rs, err
 	}
-	return profiles, nil
+	return rs, nil
 }
 
 func (as *AWSService) getCredentials(url, token string) (credentials, error) {
