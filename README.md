@@ -2,15 +2,15 @@
 One punch to grant all command prompts AWS access with IAM role credentials in OSX.
 
 ## Background ##
-When working with micro services using Cloudformation, we normally open multiple command prompts so that we can update the corresponding AWS resources after changing each individual service. As recommended by AWS, we should use IAM roles instead of long-term access keys in this case. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.
+When working with micro services using Cloudformation, we normally open multiple command prompts to update the corresponding AWS resources after changing each individual service. As recommended by AWS, we should use IAM roles instead of long-term access keys in this case. But the pain point is that we will have to grant the access in each command prompt, or to update the local credentials file every time when the temporary credentials are expired.
 
 ## Solution ##
-AWS-one-punch basically pulls all accounts and IAM roles with the SSO bearer token stored in cookie to generate new credentials and get them updated in the local credentials file which means with just one command, we can grant all command prompts the access.
+AWS-one-punch pulls all AWS accounts and IAM roles with the SSO bearer token stored in cookie to generate new credentials to be updated in the local credentials file, thus with just one command, we can grant all command prompts the access.
 
 ## Prerequisites ##
-AWS CLI has been installed, and the default profile has been configured.
+AWS CLI needs to be installed and configured.
 
-**Note: for simplicity, the `default` profile will be used in the credentials file.**
+**Note: for simplicity, the `default` profile will be used for one punch access.**
 
 ## Setup ##
 1. install via Homebrew
@@ -51,7 +51,7 @@ $ aws-one-punch list-accounts
 2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
 ```
 
-2. open the url, wait for the SSO finished and run above command again(PS. keep listing the accounts unitl it works as the token will only be written to cookie when all resources have been loaded during the SSO)
+2. open the url, finish SSO and repeat step one(PS. keep listing the accounts unitl it works as the token will only be written to cookie when all resources have been loaded after the SSO)
 ```
 $ aws-one-punch list-accounts
 AccountId: ins-sd4312, accountName: 20890663 (MRP IaaS Prod)
