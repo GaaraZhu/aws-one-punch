@@ -97,7 +97,7 @@ func aesStripPadding(data []byte) ([]byte, error) {
 func getPassword() string {
 	parts := strings.Fields("security find-generic-password -wga Chrome")
 	cmd := parts[0]
-	parts = parts[1:len(parts)]
+	parts = parts[1:]
 
 	out, err := exec.Command(cmd, parts...).Output()
 	if err != nil {
