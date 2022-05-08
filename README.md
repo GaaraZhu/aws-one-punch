@@ -2,10 +2,10 @@
 One command to grant all command prompts AWS access with IAM role credentials in OSX for AWS SSO users. 
 
 ## Background ##
-When working in organizations where [AWS SSO](https://aws.amazon.com/single-sign-on/) is used to manage the AWS accounts, we can obtain the [IAM temporary credentials](https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html) in the user portal for command line or programmatic access to the cloud resources. The pain point is the manual work (generate credentials, copy paste and execute in the command prompt, or to update the local credentials file) needs to be done every time when the temporary credentials are expired, and it will become worse when there are multiple command prompts opened which is quite common when working with micro services whose resources are maintained through [CloudFormation](https://aws.amazon.com/cloudformation/) or equivalent.
+When working in organizations where [AWS SSO](https://aws.amazon.com/single-sign-on/) is used to manage the AWS accounts, we can obtain the [IAM temporary credentials](https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html) in the user portal to access cloud resources from command lines. The pain point is the manual work (generate credentials, copy paste and execute in the command prompt, or to update the local credentials file) needs to be done every time when the temporary credentials are expired, and it will become worse when there are multiple command prompts opened which is quite common when working with [Microservices](https://aws.amazon.com/microservices/) whose resources are maintained through [CloudFormation](https://aws.amazon.com/cloudformation/) or equivalent.
 
 ## Solution ##
-AWS-one-punch retrieves the AWS SSO bearer token stored in Chrome cookie after the authentication process to provide below functionalities:
+AWS-one-punch retrieves the AWS SSO bearer token stored in Chrome cookie after the authentication process to interact with [AWS SSO APIs](https://docs.aws.amazon.com/singlesignon/latest/PortalAPIReference/ssoportal-api.pdf) to provide below functionalities:
 * List all assigned AWS accounts
 * List all assigned AWS IAM role in an AWS account
 * Grant all command promopts AWS access with temporary credentails from an IAM role
@@ -71,14 +71,16 @@ $ aws-one-punch access --account-name 69127290 --role-name DigitalDeveloperNonpr
 AWS access granted with account 69127290 and IAM role DigitalDeveloperNonprodAccess
 ```
 
-## Simplification ##
-For furthur simplification, we can create an [alias](https://wpbeaches.com/make-an-alias-in-bash-or-zsh-shell-in-macos-with-terminal/) for above access command, or have it managed through [pet](https://github.com/knqyf263/pet).
-
-## Limitation ##
-There is a delay up to 30 seconds after the SSO authentication before the token is available in the Cookie due to Chrome's persistence implementation with [SQLitePersistentCookieStore](https://www.chromium.org/developers/design-documents/network-stack/cookiemonster/). If the same error message is showing after the SSO authentication, please keep trying until it works.
+**Note:**
+1. if you see this error for any command, please open the user portal to finish SSO authentication first.
 ```
 2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
 ```
+
+2. If above error message is still showing after the SSO authentication, please don't panic as aws-one-punch will retry the operation until the token is available in the Cookie due to the fact that there is a delay up to 30 seconds caused by Chrome's persistence implementation with [SQLitePersistentCookieStore](https://www.chromium.org/developers/design-documents/network-stack/cookiemonster/). 
+
+## Simplification ##
+For furthur simplification, we can create an [alias](https://wpbeaches.com/make-an-alias-in-bash-or-zsh-shell-in-macos-with-terminal/) for above access command, or have it managed through [pet](https://github.com/knqyf263/pet).
 
 ## Contribution ##
 Your contributions are always welcome!
