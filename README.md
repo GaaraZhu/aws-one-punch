@@ -29,18 +29,18 @@ AWS-one-punch retrieves the AWS SSO bearer token stored in Chrome cookie after t
  ```
 $ aws-one-punch
 NAME:
-   aws-one-punch - one punch to grant all command prompts AWS access with IAM role credentials in OSX.
+   aws-one-punch - one command to grant all command prompts AWS access with IAM role credentials in OSX for AWS SSO users.
 
 USAGE:
    aws-one-punch [global options] command [command options] [arguments...]
 
 VERSION:
-   1.0.0
+   2.0.0
 
 COMMANDS:
-   list-accounts, ls-a  List accounts
-   list-roles, ls-r     List IAM roles under an account
-   access, a            Access AWS Resource with IAM role credentials
+   list-accounts, ls-a  List all assigned AWS accounts
+   list-roles, ls-r     List all assigned AWS IAM role in an AWS account
+   access, a            Grant all command promopts AWS access with temporary credentails from an IAM role
    help, h              Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:

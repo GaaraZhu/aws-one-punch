@@ -25,8 +25,8 @@ func main() {
 
 func info() {
 	app.Name = "aws-one-punch"
-	app.Usage = "one punch to grant all command prompts AWS access with IAM Role credentials in OSX."
-	app.Version = "1.0.0"
+	app.Usage = "one command to grant all command prompts AWS access with IAM role credentials in OSX for AWS SSO users."
+	app.Version = "2.0.0"
 }
 
 func commands() {
@@ -41,7 +41,7 @@ func commands() {
 		{
 			Name:    "list-accounts",
 			Aliases: []string{"ls-a"},
-			Usage:   "List accounts",
+			Usage:   "List all assigned AWS accounts",
 			Action: func(c *cli.Context) error {
 				token, err := GetAwsSsoTokenWithRetry(domain)
 				if err != nil {
@@ -62,7 +62,7 @@ func commands() {
 		{
 			Name:    "list-roles",
 			Aliases: []string{"ls-r"},
-			Usage:   "List IAM roles under an account",
+			Usage:   "List all assigned AWS IAM role in an AWS account",
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "account-id", Required: true},
 			},
@@ -89,7 +89,7 @@ func commands() {
 		{
 			Name:    "access",
 			Aliases: []string{"a"},
-			Usage:   "Access AWS Resource with IAM role credentials",
+			Usage:   "Grant all command promopts AWS access with temporary credentails from an IAM role",
 			Flags: []cli.Flag{
 				&cli.StringFlag{Name: "account-name", Required: true},
 				&cli.StringFlag{Name: "role-name", Required: true},
