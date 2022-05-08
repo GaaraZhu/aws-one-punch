@@ -53,7 +53,7 @@ func GetAwsSsoTokenWithRetry(domain string) (string, error) {
 	for i := 0; i <= 60; i++ { // Retry for maximum 5 minutes - 5 seconds backoff and 60 maximum attempts
 		token, err := getAwsSsoToken(domain)
 		if err != nil {
-			fmt.Println(err.Error())
+			fmt.Printf("Warning: %s. If you have already done this, please wait for aws-one-punch to execute the command.\n", err.Error())
 			time.Sleep(5 * time.Second)
 			continue
 		}
@@ -75,11 +75,11 @@ func getAwsSsoToken(domain string) (string, error) {
 			if currentTime <= cookie.Expires_utc {
 				return cookie.DecryptedValue(), nil
 			} else {
-				return "", fmt.Errorf("AWS SSO Token expired, please open the AWS Management Console https://%s/start/#/ first", domain)
+				return "", fmt.Errorf("AWS SSO Token expired, please finish the SSO in the user portal first: https://%s/start/#/", domain)
 			}
 		}
 	}
-	return "", fmt.Errorf("no AWS SSO token found, please finish the SSO in the user portal first: https://%s/start/#/ first", domain)
+	return "", fmt.Errorf("no AWS SSO token found, please finish the SSO in the user portal first: https://%s/start/#/", domain)
 }
 
 func decryptValue(encryptedValue []byte) string {

@@ -72,9 +72,9 @@ AWS access granted with account 69127290 and IAM role DigitalDeveloperNonprodAcc
 ```
 
 **Note:**
-1. if you see this error for any command, please open the user portal to finish SSO authentication first.
+1. if you see this error, please open the user portal to finish SSO authentication first.
 ```
-2021/11/10 22:04:14 No AWS SSO token found, please finish the SSO in the user portal first: https://gzhu.awsapps.com/start/#/ first
+2021/11/10 22:04:14 Warning: no AWS SSO token found, please finish the SSO authentication in the user portal first: https://gzhu.awsapps.com/start/#/. If you have already done this, please wait for aws-one-punch to execute the command.
 ```
 
 2. If above error message is still showing after the SSO authentication, please don't panic as aws-one-punch will retry the operation until the token is available in the Cookie due to the fact that there is a delay up to 30 seconds caused by Chrome's persistence implementation with [SQLitePersistentCookieStore](https://www.chromium.org/developers/design-documents/network-stack/cookiemonster/). 
