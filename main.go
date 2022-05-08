@@ -43,7 +43,7 @@ func commands() {
 			Aliases: []string{"ls-a"},
 			Usage:   "List accounts",
 			Action: func(c *cli.Context) error {
-				token, err := GetAwsSsoToken(domain)
+				token, err := GetAwsSsoTokenWithRetry(domain)
 				if err != nil {
 					return err
 				}
@@ -68,7 +68,7 @@ func commands() {
 			},
 			Action: func(c *cli.Context) error {
 				accountId := c.Value("account-id")
-				token, err := GetAwsSsoToken(domain)
+				token, err := GetAwsSsoTokenWithRetry(domain)
 				if err != nil {
 					log.Fatalln(err)
 				}
@@ -97,7 +97,7 @@ func commands() {
 			Action: func(c *cli.Context) error {
 				accountId := c.Value("account-name")
 				roleName := c.Value("role-name")
-				token, err := GetAwsSsoToken(domain)
+				token, err := GetAwsSsoTokenWithRetry(domain)
 				if err != nil {
 					log.Fatalln(err)
 				}

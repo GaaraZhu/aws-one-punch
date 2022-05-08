@@ -46,8 +46,28 @@ func (c *Cookie) DecryptedValue() string {
 	return ""
 }
 
-func GetAwsSsoToken(domain string) (string, error) {
-	password = getPassword()
+// Retry until the SSO token is available due to a delay up to 30 seconds after the SSO authentication
+// before it's updated in the Cookie due to Chrome's persistence implementation with SQLitePersistentCookieStore
+// (https://www.chromium.org/developers/design-documents/network-stack/cookiemonster/).
+func GetAwsSsoTokenWithRetry(domain string) (string, error) {
+	for i := 0; i <= 60; i++ { // Retry for maximum 5 minutes - 5 seconds backoff and 60 maximum attempts
+		token, err := getAwsSsoToken(domain)
+		if err != nil {
+			fmt.Println(err.Error())
+			time.Sleep(5 * time.Second)
+			continue
+		}
+		return token, nil
+	}
+
+	return "", fmt.Errorf("failed to obtain AWS SSO token for domain %s", domain)
+}
+
+func getAwsSsoToken(domain string) (string, error) {
+	// password will be used to decrypt the encrypted cookie value
+	if password == "" {
+		password = getPassword()
+	}
 	for _, cookie := range getCookies(domain) {
 		if cookie.Key == "x-amz-sso_authn" {
 			// if cookie.Expires_utc
@@ -55,11 +75,11 @@ func GetAwsSsoToken(domain string) (string, error) {
 			if currentTime <= cookie.Expires_utc {
 				return cookie.DecryptedValue(), nil
 			} else {
-				return "", fmt.Errorf(fmt.Sprintf("AWS SSO Token expired, please open the AWS Management Console https://%s/start/#/ first", domain))
+				return "", fmt.Errorf("AWS SSO Token expired, please open the AWS Management Console https://%s/start/#/ first", domain)
 			}
 		}
 	}
-	return "", fmt.Errorf(fmt.Sprintf("No AWS SSO token found, please finish the SSO in the user portal first: https://%s/start/#/ first", domain))
+	return "", fmt.Errorf("no AWS SSO token found, please finish the SSO in the user portal first: https://%s/start/#/ first", domain)
 }
 
 func decryptValue(encryptedValue []byte) string {
