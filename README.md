@@ -1,5 +1,16 @@
 # aws-one-punch
-One command to grant all command prompts AWS access with IAM role credentials in OSX for AWS SSO users. 
+
+<a href="#">
+ <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?logo=amazon-aws" height="20" width="60" /> 
+</a>
+<a href="#">
+ <img src="https://img.shields.io/badge/license-MIT-blue.svg">
+</a>
+<a href="?tab=readme-ov-file#contribution">
+ <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square">
+</a>
+<br><br>
+One command to grant all command prompts AWS access with IAM role credentials in OSX for AWS SSO users
 
 ## Background ##
 When working in organizations where [AWS SSO](https://aws.amazon.com/single-sign-on/) is used to manage the AWS accounts, we can obtain the [IAM temporary credentials](https://docs.aws.amazon.com/singlesignon/latest/userguide/howtogetcredentials.html) in the user portal to access cloud resources from command lines. The pain point is the manual work (generate credentials, copy paste and execute in the command prompt, or to update the local credentials file) needs to be done every time when the temporary credentials are expired, and it will become worse when there are multiple command prompts opened which is quite common when working with [Microservices](https://aws.amazon.com/microservices/) whose resources are maintained through [CloudFormation](https://aws.amazon.com/cloudformation/) or equivalent.
